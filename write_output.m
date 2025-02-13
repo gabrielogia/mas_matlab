@@ -26,9 +26,9 @@ classdef write_output
 
                 for j = 1:numel(pos)
                     if (pos(j) > data.free_dofs)
-                        aux = strcat(aux, sprintf(" Global coordinate (x): %d | Reaction: %.2f | ", pos(j), data.reactions_vector(pos(j) - data.free_dofs)));
+                        aux = strcat(aux, sprintf(" Global coordinate: %d | Reaction: %.2f psi | ", pos(j), data.reactions_vector(pos(j) - data.free_dofs)));
                     else
-                        aux = strcat(aux, sprintf(" Global coordinate (y): %d | External force: %.2f | ", pos(j), data.global_forces_vector(pos(j))));
+                        aux = strcat(aux, sprintf(" Global coordinate: %d | External force: %.2f psi | ", pos(j), data.global_forces_vector(pos(j))));
                     end
                 end
 
@@ -45,9 +45,9 @@ classdef write_output
 
                 for j = 1:numel(pos)
                     if (pos(j) > data.free_dofs)
-                        aux = strcat(aux, sprintf(" Global coordinate (x): %d | Displacement: 0.0000 | ", pos(j)));
+                        aux = strcat(aux, sprintf(" Global coordinate: %d | Displacement: 0.0000 ft | ", pos(j)));
                     else
-                        aux = strcat(aux, sprintf(" Global coordinate (y): %d | Displacement: %.4f | ", pos(j), data.global_displacements_vector(pos(j))));
+                        aux = strcat(aux, sprintf(" Global coordinate: %d | Displacement: %.4f ft | ", pos(j), data.global_displacements_vector(pos(j))));
                     end
                 end
 
@@ -57,7 +57,12 @@ classdef write_output
 
         function print_stress(~,data)
             disp("--- AXIAL FORCES ---")
-            
+
+            for i = 1:numel(data.elements)
+                aux = sprintf("ELEMENT %d :::", i);
+                aux = strcat(aux, sprintf(" Axial force: %.2f psi ", data.elements(i).local_forces_local_coord(3)));
+                disp(aux)
+            end
         end
 
         function plot_results(obj,data)
@@ -65,6 +70,7 @@ classdef write_output
             obj.plot_deformed_structure(data)
 
             figure(1)
+            title("Undeformed (blue) vs. deformed (red) configurations")
             k=8;
             xlim([0-max([data.nodes(:).x]/k) max([data.nodes(:).x]+max([data.nodes(:).x])/k)])
             ylim([0-max([data.nodes(:).y]/k) max([data.nodes(:).y]+max([data.nodes(:).y])/k)])

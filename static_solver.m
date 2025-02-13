@@ -9,8 +9,18 @@ classdef static_solver
         end
 
         function obj = solve(obj)
+
+            % INPUT: class object
+            % OUTPUT: class object
+
+            % Solves the linear system F = KX.
             obj = obj.get_nodal_displacements();
+
+            % Computes forces and displacements for each member in local
+            % and global coordinates.
             obj = obj.get_members_forces_and_displacements();
+
+            % Computes reaction forces in the constrained nodes. 
             obj = obj.get_reactions();
         end
 

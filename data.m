@@ -1,4 +1,4 @@
-classdef data    
+classdef data
     properties
         global_coordinates = []
         free_dofs = []
@@ -15,6 +15,13 @@ classdef data
     
     methods
         function obj = read_structure_data(obj,filename)
+
+            % INPUT: class object
+            %        filename (str)
+            % OUTPUT: class object
+
+            % Reads the input file and stores structure configuration
+
             obj.filename = filename;
             fid = fopen(obj.filename, 'r');
             
@@ -74,6 +81,13 @@ classdef data
         end
         
         function obj = set_global_coordinates(obj)
+
+            % INPUT: class object
+            % OUTPUT: class object
+
+            % Stores the configuration of degrees of freedom, either free
+            % or constrained (restrained), into global coordinates vector
+
             dofs_free = 0;
             dofs_restrained = 0;
 
@@ -109,6 +123,17 @@ classdef data
         end
 
         function obj = set_local_variables_bar(obj)
+            
+            % INPUT: class object
+            % OUTPUT: class object
+
+            % Stores elements configuration and properties, such as: 
+            % L: length; cosine: value of cos(x); sine: value of sin(x);
+            % connectivity_vector: which nodes are connected in the element; 
+            % rotation_matrix: matrix with the rotation transformation; 
+            % local_stiffness_local_coord: stiffness matrix in local coordinates; 
+            % local_stiffness_global_coord: stiffness matrix in global coordinates.
+
             for i = 1:numel(obj.elements)
                 obj.elements(i).L = sqrt((obj.nodes(obj.elements(i).end_node).x - obj.nodes(obj.elements(i).init_node).x)^2 ...
                                           + (obj.nodes(obj.elements(i).end_node).y - obj.nodes(obj.elements(i).init_node).y)^2);
@@ -128,6 +153,13 @@ classdef data
         end
 
         function obj = set_global_stiffness_matrix_free_dofs(obj)
+
+            % INPUT: class object
+            % OUTPUT: class object
+
+            % Assembles the global stiffness matrix for unconstrained
+            % degrees of freedom. 
+
             obj.global_stiffness_matrix = zeros(obj.free_dofs, obj.free_dofs);
 
             for e = 1:numel(obj.elements)
@@ -144,6 +176,13 @@ classdef data
         end
 
         function obj = set_global_force_vector(obj)
+
+            % INPUT: class object
+            % OUTPUT: class object
+
+            % Assembles the global force vector for unconstrained degrees
+            % of freedom.
+
             obj.global_forces_vector = zeros(1,obj.free_dofs)';
 
             for i = 1:numel(obj.nodes)
